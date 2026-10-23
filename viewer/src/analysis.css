@@ -1,0 +1,29 @@
+.analysis-stack { display: grid; gap: 1rem; }
+.analysis-stack input:not([type="checkbox"]), .analysis-stack select,
+.analysis-stack textarea { width: 100%; min-width: 0; }
+.analysis-stack input[type="text"] {
+  border: 1px solid #46576a; border-radius: 7px; background: #162333; padding: 0.55rem 0.75rem;
+}
+.analysis-drop { border: 2px dashed #697f91; border-radius: 9px; padding: 1.2rem; margin-bottom: 1rem; }
+.analysis-drop.dragging { background: #25384d; border-color: var(--accent); }
+.analysis-drop input { margin-top: 0.6rem; }
+.analysis-checks { display: grid; gap: 0.9rem; margin: 1rem 0; }
+.analysis-checks label { align-items: start; }
+.analysis-info { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8rem; }
+.geometry-frame { background: #080d13; border-radius: 7px; overflow: hidden; margin-top: 1rem; }
+#geometry-canvas { position: static; display: block; width: 100%; height: auto; pointer-events: auto; cursor: crosshair; touch-action: manipulation; }
+#geometry-json { min-height: 240px; font: 0.8rem monospace; resize: vertical; margin: 0.7rem 0; }
+#geometry-shapes { padding-left: 1.2rem; }
+#geometry-shapes li { margin: 0.7rem 0; }
+#geometry-shapes button { margin-left: 0.5rem; font-size: 0.75rem; }
+.analysis-jobs { display: grid; gap: 1rem; }
+.analysis-job { border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-wrap: anywhere; }
+.analysis-job h3 { margin-top: 0; }
+.analysis-job progress { width: 100%; max-width: 600px; accent-color: var(--accent); }
+.analysis-job .job-error { white-space: pre-wrap; }
+.analysis-job .op-actions { margin-top: 0.5rem; font-size: 0.85rem; }
+#recording-utc { padding: 0 1.25rem 0.8rem; font-variant-numeric: tabular-nums; }
+.review-tools { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; padding: 0.5rem 1.25rem; }
+.review-tools label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+.zone-readings { padding: 0 1.25rem; font-size: 0.8rem; color: var(--muted); }
+.zone-readings:empty { display: none; }

@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "parking-analytics"
+version = "0.1.0"
+description = "Offline, evidence-first parking video analysis and replay"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "av>=15,<17",
+    "numpy>=2.1,<2.3",
+    "pillow>=11,<13",
+    "pydantic>=2.10,<3",
+    "scipy>=1.15,<2",
+]
+
+[project.optional-dependencies]
+app = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.34,<1",
+]
+inference = [
+    "torch==2.8.0",
+    "torchvision==0.23.0",
+    "transformers>=4.55,<4.58",
+    "supervision==0.25.1",
+]
+
+[project.scripts]
+parking = "parking_analytics.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3,<10", "ruff>=0.11,<1", "httpx>=0.28,<1"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+torchvision = { index = "pytorch-cu126" }
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

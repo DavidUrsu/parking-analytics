@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "g328-zone-v2",
+  "config_sha256": "bfbcbd247a5a3ac44e3a7834abebb12e5eea8f4cffc8f287608c7af8ffa8c2e1",
+  "review_status": "provisional",
+  "origin": "AI-prepared visual inspection of source-frame contact sheets before detector inference. NOT human-verified ground truth. MEVA r13 uses its documented decoded-frame / 30 clock, not irregular raw AVI PTS; draft snapshots require review on the normalized replay. Labels are unchanged by the later development-diagnosed vehicle-deduplication software fix. Boundary-ambiguous counts are null. Crossing times/gates are drafts requiring video review; event completeness is not confirmed.",
+  "events_complete": false,
+  "clips": [
+    {
+      "clip_id": "development",
+      "snapshots": [
+        {"time_s": 0, "zone_counts": {"foreground": 5}, "notes": "Five foreground vehicles; the far-left vehicle is outside the polygon."},
+        {"time_s": 5, "zone_counts": {"foreground": 5}},
+        {"time_s": 10, "zone_counts": {"foreground": 5}},
+        {"time_s": 15, "zone_counts": {"foreground": 5}},
+        {"time_s": 20, "zone_counts": {"foreground": 5}},
+        {"time_s": 25, "zone_counts": {"foreground": null}, "notes": "Moving SUV near the upper boundary: inspect its ground-contact anchor."},
+        {"time_s": 30, "zone_counts": {"foreground": 6}, "notes": "Includes the passing SUV, not an extra occupied parking bay."},
+        {"time_s": 35, "zone_counts": {"foreground": 5}},
+        {"time_s": 40, "zone_counts": {"foreground": 5}},
+        {"time_s": 45, "zone_counts": {"foreground": 5}},
+        {"time_s": 50, "zone_counts": {"foreground": 5}},
+        {"time_s": 55, "zone_counts": {"foreground": 5}}
+      ],
+      "events": [
+        {"time_s": 27, "gate_id": "north", "direction": "in", "notes": "Draft: passing SUV enters near the upper boundary between snapshots 25-30; verify exact gate/time."},
+        {"time_s": 33, "gate_id": "west", "direction": "out", "notes": "Draft: passing SUV leaves through the left boundary between snapshots 30-35."}
+      ]
+    },
+    {
+      "clip_id": "arrival",
+      "snapshots": [
+        {"time_s": 0, "zone_counts": {"foreground": 3}},
+        {"time_s": 5, "zone_counts": {"foreground": 3}},
+        {"time_s": 10, "zone_counts": {"foreground": 3}},
+        {"time_s": 15, "zone_counts": {"foreground": 3}},
+        {"time_s": 20, "zone_counts": {"foreground": 3}},
+        {"time_s": 25, "zone_counts": {"foreground": 3}},
+        {"time_s": 30, "zone_counts": {"foreground": 3}, "notes": "Red car is above the sloping access boundary; verify anchor on playback."},
+        {"time_s": 35, "zone_counts": {"foreground": 3}},
+        {"time_s": 40, "zone_counts": {"foreground": 3}},
+        {"time_s": 45, "zone_counts": {"foreground": 3}},
+        {"time_s": 50, "zone_counts": {"foreground": 4}, "notes": "Passing vehicle close to upper boundary; verify anchor."},
+        {"time_s": 55, "zone_counts": {"foreground": 3}},
+        {"time_s": 60, "zone_counts": {"foreground": 3}},
+        {"time_s": 65, "zone_counts": {"foreground": null}, "notes": "Passing SUV on upper boundary; requires close review."},
+        {"time_s": 70, "zone_counts": {"foreground": null}, "notes": "Passing SUV on left boundary; requires close review."},
+        {"time_s": 75, "zone_counts": {"foreground": 3}},
+        {"time_s": 80, "zone_counts": {"foreground": 3}},
+        {"time_s": 85, "zone_counts": {"foreground": 3}}
+      ],
+      "events": [
+        {"time_s": 49, "gate_id": "north", "direction": "in", "notes": "Draft for the passing vehicle near snapshot 50; verify gate/time and whether anchor actually enters."},
+        {"time_s": 52, "gate_id": "north", "direction": "out", "notes": "Draft departure of that vehicle; gate/time uncertain, must be corrected or removed after review."},
+        {"time_s": 64, "gate_id": "north", "direction": "in", "notes": "Draft for SUV passing near snapshot 65; verify gate/time."},
+        {"time_s": 71, "gate_id": "west", "direction": "out", "notes": "Draft for SUV leaving near snapshot 70; verify gate/time."}
+      ]
+    },
+    {
+      "clip_id": "occlusion",
+      "snapshots": [
+        {"time_s": 0, "zone_counts": {"foreground": 4}},
+        {"time_s": 5, "zone_counts": {"foreground": 5}, "notes": "Includes arriving dark SUV, still moving."},
+        {"time_s": 10, "zone_counts": {"foreground": 5}},
+        {"time_s": 15, "zone_counts": {"foreground": 5}},
+        {"time_s": 20, "zone_counts": {"foreground": 5}},
+        {"time_s": 25, "zone_counts": {"foreground": 5}},
+        {"time_s": 30, "zone_counts": {"foreground": 5}},
+        {"time_s": 35, "zone_counts": {"foreground": 5}},
+        {"time_s": 40, "zone_counts": {"foreground": 5}},
+        {"time_s": 45, "zone_counts": {"foreground": 5}},
+        {"time_s": 50, "zone_counts": {"foreground": 5}},
+        {"time_s": 55, "zone_counts": {"foreground": 5}},
+        {"time_s": 60, "zone_counts": {"foreground": 5}, "notes": "People partly overlap vehicle outlines; inspect rather than deleting a parked vehicle."},
+        {"time_s": 65, "zone_counts": {"foreground": 5}},
+        {"time_s": 70, "zone_counts": {"foreground": 5}},
+        {"time_s": 75, "zone_counts": {"foreground": 5}},
+        {"time_s": 80, "zone_counts": {"foreground": 5}},
+        {"time_s": 85, "zone_counts": {"foreground": 6}, "notes": "Includes red passing car in addition to five foreground vehicles."},
+        {"time_s": 90, "zone_counts": {"foreground": 6}},
+        {"time_s": 95, "zone_counts": {"foreground": 5}},
+        {"time_s": 100, "zone_counts": {"foreground": 5}}
+      ],
+      "events": [
+        {"time_s": 3, "gate_id": "north", "direction": "in", "notes": "Draft: dark SUV moves into the foreground within the first five seconds; verify gate/time."},
+        {"time_s": 83, "gate_id": "north", "direction": "in", "notes": "Draft: passing red car enters between snapshots 80-85."},
+        {"time_s": 92, "gate_id": "west", "direction": "out", "notes": "Draft: passing red car leaves between snapshots 90-95."}
+      ]
+    }
+  ]
+}

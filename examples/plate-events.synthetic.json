@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "site_id": "synthetic-import",
+  "site_name": "Explicit synthetic historical import",
+  "source_label": "Generated operator-log example; no camera OCR",
+  "source_kind": "synthetic",
+  "rights_attested": false,
+  "events": [
+    {
+      "event_id": "demo-one-entry",
+      "occurred_at": "2026-01-15T10:00:00Z",
+      "direction": "in",
+      "plate": "DEMO101",
+      "country_code": "RO",
+      "review_state": "confirmed",
+      "confidence": null,
+      "camera_id": "generated-entry"
+    },
+    {
+      "event_id": "demo-one-exit",
+      "occurred_at": "2026-01-15T11:15:00Z",
+      "direction": "out",
+      "plate": "DEMO101",
+      "country_code": "RO",
+      "review_state": "confirmed",
+      "confidence": null,
+      "camera_id": "generated-exit"
+    },
+    {
+      "event_id": "demo-two-entry",
+      "occurred_at": "2026-01-15T10:30:00Z",
+      "direction": "in",
+      "plate": "DEMO102",
+      "country_code": "RO",
+      "review_state": "confirmed",
+      "confidence": null,
+      "camera_id": "generated-entry"
+    },
+    {
+      "event_id": "demo-two-exit",
+      "occurred_at": "2026-01-15T12:00:00Z",
+      "direction": "out",
+      "plate": "DEMO102",
+      "country_code": "RO",
+      "review_state": "confirmed",
+      "confidence": null,
+      "camera_id": "generated-exit"
+    },
+    {
+      "event_id": "demo-unmatched-exit",
+      "occurred_at": "2026-01-15T12:30:00Z",
+      "direction": "out",
+      "plate": "DEMO103",
+      "country_code": "RO",
+      "review_state": "confirmed",
+      "confidence": null,
+      "camera_id": "generated-exit"
+    },
+    {
+      "event_id": "demo-unreadable",
+      "occurred_at": "2026-01-15T12:40:00Z",
+      "direction": "in",
+      "plate": null,
+      "country_code": null,
+      "review_state": "needs_review",
+      "confidence": null,
+      "camera_id": "generated-entry"
+    }
+  ]
+}

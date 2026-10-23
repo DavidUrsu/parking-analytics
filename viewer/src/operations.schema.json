@@ -1,0 +1,855 @@
+{
+  "$defs": {
+    "BillingPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "enum": [
+            "RON",
+            "EUR",
+            "USD"
+          ],
+          "title": "Currency",
+          "type": "string"
+        },
+        "price_minor": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "title": "Price Minor",
+          "type": "integer"
+        },
+        "interval_minutes": {
+          "maximum": 10080,
+          "minimum": 1,
+          "title": "Interval Minutes",
+          "type": "integer"
+        },
+        "free_minutes": {
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Free Minutes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "currency",
+        "price_minor",
+        "interval_minutes",
+        "free_minutes"
+      ],
+      "title": "BillingPolicy",
+      "type": "object"
+    },
+    "BillingQuote": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "quote",
+          "default": "quote",
+          "title": "Kind",
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "manual_preview",
+            "completed_visit"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "source_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "authorized_log",
+                "anpr_log",
+                "synthetic"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Kind"
+        },
+        "visit_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Visit Id"
+        },
+        "entered_at": {
+          "format": "date-time",
+          "title": "Entered At",
+          "type": "string"
+        },
+        "exited_at": {
+          "format": "date-time",
+          "title": "Exited At",
+          "type": "string"
+        },
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "integer"
+        },
+        "billable_seconds": {
+          "minimum": 0,
+          "title": "Billable Seconds",
+          "type": "integer"
+        },
+        "charged_intervals": {
+          "minimum": 0,
+          "title": "Charged Intervals",
+          "type": "integer"
+        },
+        "policy": {
+          "$ref": "#/$defs/BillingPolicy"
+        },
+        "total_minor": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Total Minor",
+          "type": "integer"
+        },
+        "is_invoice": {
+          "const": false,
+          "default": false,
+          "title": "Is Invoice",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "basis",
+        "source_kind",
+        "visit_id",
+        "entered_at",
+        "exited_at",
+        "duration_seconds",
+        "billable_seconds",
+        "charged_intervals",
+        "policy",
+        "total_minor",
+        "is_invoice"
+      ],
+      "title": "BillingQuote",
+      "type": "object"
+    },
+    "CapacityResult": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "capacity",
+          "default": "capacity",
+          "title": "Kind",
+          "type": "string"
+        },
+        "basis": {
+          "const": "operator_inputs",
+          "default": "operator_inputs",
+          "title": "Basis",
+          "type": "string"
+        },
+        "mapped_spaces": {
+          "minimum": 0,
+          "title": "Mapped Spaces",
+          "type": "integer"
+        },
+        "occupied_spaces": {
+          "minimum": 0,
+          "title": "Occupied Spaces",
+          "type": "integer"
+        },
+        "unknown_spaces": {
+          "minimum": 0,
+          "title": "Unknown Spaces",
+          "type": "integer"
+        },
+        "available_mapped_spaces": {
+          "minimum": 0,
+          "title": "Available Mapped Spaces",
+          "type": "integer"
+        },
+        "whole_site_capacity": {
+          "default": null,
+          "title": "Whole Site Capacity",
+          "type": "null"
+        }
+      },
+      "required": [
+        "kind",
+        "basis",
+        "mapped_spaces",
+        "occupied_spaces",
+        "unknown_spaces",
+        "available_mapped_spaces",
+        "whole_site_capacity"
+      ],
+      "title": "CapacityResult",
+      "type": "object"
+    },
+    "EventDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "event",
+          "default": "event",
+          "title": "Kind",
+          "type": "string"
+        },
+        "site": {
+          "$ref": "#/$defs/SiteInfo"
+        },
+        "original": {
+          "$ref": "#/$defs/PlateEvent"
+        },
+        "current": {
+          "$ref": "#/$defs/PlateEvent"
+        },
+        "current_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Current Hash",
+          "type": "string"
+        },
+        "source_label": {
+          "title": "Source Label",
+          "type": "string"
+        },
+        "audit": {
+          "items": {
+            "$ref": "#/$defs/ReviewAudit"
+          },
+          "title": "Audit",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "site",
+        "original",
+        "current",
+        "current_hash",
+        "source_label",
+        "audit"
+      ],
+      "title": "EventDetail",
+      "type": "object"
+    },
+    "EventRow": {
+      "additionalProperties": false,
+      "properties": {
+        "record_type": {
+          "const": "event",
+          "default": "event",
+          "title": "Record Type",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "in",
+            "out"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "plate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Plate"
+        },
+        "country_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Country Code"
+        },
+        "review_state": {
+          "enum": [
+            "confirmed",
+            "needs_review",
+            "ignored"
+          ],
+          "title": "Review State",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "camera_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Camera Id"
+        },
+        "source_label": {
+          "title": "Source Label",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "enum": [
+              "unreadable_plate",
+              "unreviewed_event",
+              "duplicate_entry",
+              "unmatched_exit",
+              "simultaneous_events",
+              "future_timestamp"
+            ],
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "review_count": {
+          "minimum": 0,
+          "title": "Review Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "record_type",
+        "event_id",
+        "occurred_at",
+        "direction",
+        "plate",
+        "country_code",
+        "review_state",
+        "confidence",
+        "camera_id",
+        "source_label",
+        "issues",
+        "review_count"
+      ],
+      "title": "EventRow",
+      "type": "object"
+    },
+    "ImportResult": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "import",
+          "default": "import",
+          "title": "Kind",
+          "type": "string"
+        },
+        "site": {
+          "$ref": "#/$defs/SiteInfo"
+        },
+        "imported": {
+          "minimum": 0,
+          "title": "Imported",
+          "type": "integer"
+        },
+        "duplicates": {
+          "minimum": 0,
+          "title": "Duplicates",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "site",
+        "imported",
+        "duplicates"
+      ],
+      "title": "ImportResult",
+      "type": "object"
+    },
+    "PlateEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9._:-]+$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "in",
+            "out"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "plate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Plate"
+        },
+        "country_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Country Code"
+        },
+        "review_state": {
+          "enum": [
+            "confirmed",
+            "needs_review",
+            "ignored"
+          ],
+          "title": "Review State",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "camera_id": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Camera Id"
+        }
+      },
+      "required": [
+        "event_id",
+        "occurred_at",
+        "direction",
+        "plate",
+        "country_code",
+        "review_state",
+        "confidence",
+        "camera_id"
+      ],
+      "title": "PlateEvent",
+      "type": "object"
+    },
+    "ReviewAudit": {
+      "additionalProperties": false,
+      "properties": {
+        "changed_at": {
+          "format": "date-time",
+          "title": "Changed At",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "before": {
+          "$ref": "#/$defs/PlateEvent"
+        },
+        "after": {
+          "$ref": "#/$defs/PlateEvent"
+        }
+      },
+      "required": [
+        "changed_at",
+        "reason",
+        "before",
+        "after"
+      ],
+      "title": "ReviewAudit",
+      "type": "object"
+    },
+    "SearchResult": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "monitoring",
+          "default": "monitoring",
+          "title": "Kind",
+          "type": "string"
+        },
+        "site": {
+          "$ref": "#/$defs/SiteInfo"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "view": {
+          "enum": [
+            "visits",
+            "entries",
+            "exits",
+            "present",
+            "active",
+            "review",
+            "audit"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "total": {
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        },
+        "offset": {
+          "minimum": 0,
+          "title": "Offset",
+          "type": "integer"
+        },
+        "limit": {
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "records": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EventRow"
+              },
+              {
+                "$ref": "#/$defs/VisitRow"
+              }
+            ]
+          },
+          "title": "Records",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "site",
+        "as_of",
+        "view",
+        "total",
+        "offset",
+        "limit",
+        "records"
+      ],
+      "title": "SearchResult",
+      "type": "object"
+    },
+    "SiteInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "source_kind": {
+          "enum": [
+            "authorized_log",
+            "anpr_log",
+            "synthetic"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "event_count": {
+          "minimum": 0,
+          "title": "Event Count",
+          "type": "integer"
+        },
+        "first_event_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "First Event At"
+        },
+        "last_event_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Event At"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "source_kind",
+        "event_count",
+        "first_event_at",
+        "last_event_at"
+      ],
+      "title": "SiteInfo",
+      "type": "object"
+    },
+    "SiteList": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "sites",
+          "default": "sites",
+          "title": "Kind",
+          "type": "string"
+        },
+        "sites": {
+          "items": {
+            "$ref": "#/$defs/SiteInfo"
+          },
+          "title": "Sites",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "sites"
+      ],
+      "title": "SiteList",
+      "type": "object"
+    },
+    "VisitDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "visit",
+          "default": "visit",
+          "title": "Kind",
+          "type": "string"
+        },
+        "site": {
+          "$ref": "#/$defs/SiteInfo"
+        },
+        "visit": {
+          "$ref": "#/$defs/VisitRow"
+        }
+      },
+      "required": [
+        "kind",
+        "site",
+        "visit"
+      ],
+      "title": "VisitDetail",
+      "type": "object"
+    },
+    "VisitRow": {
+      "additionalProperties": false,
+      "properties": {
+        "record_type": {
+          "const": "visit",
+          "default": "visit",
+          "title": "Record Type",
+          "type": "string"
+        },
+        "visit_id": {
+          "title": "Visit Id",
+          "type": "string"
+        },
+        "plate": {
+          "title": "Plate",
+          "type": "string"
+        },
+        "country_code": {
+          "title": "Country Code",
+          "type": "string"
+        },
+        "entered_at": {
+          "format": "date-time",
+          "title": "Entered At",
+          "type": "string"
+        },
+        "exited_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exited At"
+        },
+        "entry_event_id": {
+          "title": "Entry Event Id",
+          "type": "string"
+        },
+        "exit_event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exit Event Id"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "completed",
+            "needs_review"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duration Seconds"
+        },
+        "elapsed_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Elapsed Seconds"
+        },
+        "issues": {
+          "items": {
+            "enum": [
+              "unreadable_plate",
+              "unreviewed_event",
+              "duplicate_entry",
+              "unmatched_exit",
+              "simultaneous_events",
+              "future_timestamp"
+            ],
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Event Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_type",
+        "visit_id",
+        "plate",
+        "country_code",
+        "entered_at",
+        "exited_at",
+        "entry_event_id",
+        "exit_event_id",
+        "status",
+        "duration_seconds",
+        "elapsed_seconds",
+        "issues",
+        "event_ids"
+      ],
+      "title": "VisitRow",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/SiteList"
+    },
+    {
+      "$ref": "#/$defs/ImportResult"
+    },
+    {
+      "$ref": "#/$defs/SearchResult"
+    },
+    {
+      "$ref": "#/$defs/EventDetail"
+    },
+    {
+      "$ref": "#/$defs/VisitDetail"
+    },
+    {
+      "$ref": "#/$defs/BillingQuote"
+    },
+    {
+      "$ref": "#/$defs/CapacityResult"
+    }
+  ]
+}

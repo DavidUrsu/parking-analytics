@@ -1,0 +1,1378 @@
+{
+  "$defs": {
+    "Analysis": {
+      "additionalProperties": false,
+      "properties": {
+        "samples": {
+          "items": {
+            "$ref": "#/$defs/Observation"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/Event"
+          },
+          "title": "Events",
+          "type": "array"
+        }
+      },
+      "required": [
+        "samples",
+        "events"
+      ],
+      "title": "Analysis",
+      "type": "object"
+    },
+    "Attribution": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "creator": {
+          "title": "Creator",
+          "type": "string"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "license": {
+          "title": "License",
+          "type": "string"
+        },
+        "license_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "License Url"
+        },
+        "modifications": {
+          "title": "Modifications",
+          "type": "string"
+        },
+        "staged_scenarios": {
+          "title": "Staged Scenarios",
+          "type": "boolean"
+        },
+        "public_presentation_cleared": {
+          "const": false,
+          "title": "Public Presentation Cleared",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "title",
+        "creator",
+        "source_url",
+        "license",
+        "license_url",
+        "modifications",
+        "staged_scenarios",
+        "public_presentation_cleared"
+      ],
+      "title": "Attribution",
+      "type": "object"
+    },
+    "CountMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "reference_samples": {
+          "minimum": 0,
+          "title": "Reference Samples",
+          "type": "integer"
+        },
+        "comparable_samples": {
+          "minimum": 0,
+          "title": "Comparable Samples",
+          "type": "integer"
+        },
+        "unknown_reference_samples": {
+          "minimum": 0,
+          "title": "Unknown Reference Samples",
+          "type": "integer"
+        },
+        "abstentions": {
+          "minimum": 0,
+          "title": "Abstentions",
+          "type": "integer"
+        },
+        "exact_matches": {
+          "minimum": 0,
+          "title": "Exact Matches",
+          "type": "integer"
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Coverage"
+        },
+        "mean_absolute_error": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mean Absolute Error"
+        },
+        "signed_bias": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Signed Bias"
+        },
+        "exact_match_rate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exact Match Rate"
+        }
+      },
+      "required": [
+        "reference_samples",
+        "comparable_samples",
+        "unknown_reference_samples",
+        "abstentions",
+        "exact_matches",
+        "coverage",
+        "mean_absolute_error",
+        "signed_bias",
+        "exact_match_rate"
+      ],
+      "title": "CountMetrics",
+      "type": "object"
+    },
+    "Evaluation": {
+      "additionalProperties": false,
+      "properties": {
+        "reference_status": {
+          "enum": [
+            "provisional",
+            "reviewed"
+          ],
+          "title": "Reference Status",
+          "type": "string"
+        },
+        "reference_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Reference Sha256",
+          "type": "string"
+        },
+        "events_complete": {
+          "title": "Events Complete",
+          "type": "boolean"
+        },
+        "event_tolerance_s": {
+          "exclusiveMinimum": 0,
+          "title": "Event Tolerance S",
+          "type": "number"
+        },
+        "by_clip": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]*$": {
+              "additionalProperties": {
+                "$ref": "#/$defs/MethodMetrics"
+              },
+              "propertyNames": {
+                "enum": [
+                  "baseline",
+                  "candidate"
+                ]
+              },
+              "type": "object"
+            }
+          },
+          "title": "By Clip",
+          "type": "object"
+        },
+        "by_split": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "$ref": "#/$defs/MethodMetrics"
+            },
+            "propertyNames": {
+              "enum": [
+                "baseline",
+                "candidate"
+              ]
+            },
+            "type": "object"
+          },
+          "propertyNames": {
+            "enum": [
+              "development",
+              "held_out"
+            ]
+          },
+          "title": "By Split",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reference_status",
+        "reference_sha256",
+        "events_complete",
+        "event_tolerance_s",
+        "by_clip",
+        "by_split",
+        "limitations"
+      ],
+      "title": "Evaluation",
+      "type": "object"
+    },
+    "Event": {
+      "additionalProperties": false,
+      "properties": {
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "gate_id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Gate Id",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "in",
+            "out"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "track_id": {
+          "minimum": 1,
+          "title": "Track Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "time_s",
+        "gate_id",
+        "direction",
+        "track_id"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "EventMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "predicted_events": {
+          "minimum": 0,
+          "title": "Predicted Events",
+          "type": "integer"
+        },
+        "reference_events": {
+          "minimum": 0,
+          "title": "Reference Events",
+          "type": "integer"
+        },
+        "scoreable": {
+          "title": "Scoreable",
+          "type": "boolean"
+        },
+        "true_positive": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "True Positive"
+        },
+        "false_positive": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "False Positive"
+        },
+        "false_negative": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "False Negative"
+        },
+        "precision": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Precision"
+        },
+        "recall": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recall"
+        },
+        "f1": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "F1"
+        },
+        "signed_count_error": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Signed Count Error"
+        }
+      },
+      "required": [
+        "predicted_events",
+        "reference_events",
+        "scoreable",
+        "true_positive",
+        "false_positive",
+        "false_negative",
+        "precision",
+        "recall",
+        "f1",
+        "signed_count_error"
+      ],
+      "title": "EventMetrics",
+      "type": "object"
+    },
+    "Gate": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "start": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Start",
+          "type": "array"
+        },
+        "end": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "End",
+          "type": "array"
+        },
+        "inward_side": {
+          "enum": [
+            -1,
+            1
+          ],
+          "title": "Inward Side",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "start",
+        "end",
+        "inward_side"
+      ],
+      "title": "Gate",
+      "type": "object"
+    },
+    "MethodMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "occupancy": {
+          "$ref": "#/$defs/CountMetrics"
+        },
+        "events": {
+          "$ref": "#/$defs/EventMetrics"
+        },
+        "event_groups": {
+          "additionalProperties": {
+            "$ref": "#/$defs/EventMetrics"
+          },
+          "title": "Event Groups",
+          "type": "object"
+        }
+      },
+      "required": [
+        "occupancy",
+        "events",
+        "event_groups"
+      ],
+      "title": "MethodMetrics",
+      "type": "object"
+    },
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "vehicles": {
+          "items": {
+            "$ref": "#/$defs/Vehicle"
+          },
+          "title": "Vehicles",
+          "type": "array"
+        },
+        "zones": {
+          "items": {
+            "$ref": "#/$defs/ZoneCount"
+          },
+          "minItems": 1,
+          "title": "Zones",
+          "type": "array"
+        }
+      },
+      "required": [
+        "time_s",
+        "vehicles",
+        "zones"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "Protocol": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "occupancy_mode": {
+          "const": "observed_vehicle_count",
+          "title": "Occupancy Mode",
+          "type": "string"
+        },
+        "reference_interval_s": {
+          "exclusiveMinimum": 0,
+          "title": "Reference Interval S",
+          "type": "number"
+        },
+        "event_tolerance_s": {
+          "exclusiveMinimum": 0,
+          "title": "Event Tolerance S",
+          "type": "number"
+        },
+        "notes": {
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "occupancy_mode",
+        "reference_interval_s",
+        "event_tolerance_s",
+        "notes"
+      ],
+      "title": "Protocol",
+      "type": "object"
+    },
+    "Reference": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "protocol_version": {
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "review_status": {
+          "enum": [
+            "provisional",
+            "reviewed"
+          ],
+          "title": "Review Status",
+          "type": "string"
+        },
+        "origin": {
+          "minLength": 1,
+          "title": "Origin",
+          "type": "string"
+        },
+        "events_complete": {
+          "title": "Events Complete",
+          "type": "boolean"
+        },
+        "clips": {
+          "items": {
+            "$ref": "#/$defs/ReferenceClip"
+          },
+          "minItems": 1,
+          "title": "Clips",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "protocol_version",
+        "config_sha256",
+        "review_status",
+        "origin",
+        "events_complete",
+        "clips"
+      ],
+      "title": "Reference",
+      "type": "object"
+    },
+    "ReferenceClip": {
+      "additionalProperties": false,
+      "properties": {
+        "clip_id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "snapshots": {
+          "items": {
+            "$ref": "#/$defs/ReferenceSnapshot"
+          },
+          "title": "Snapshots",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/ReferenceEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        }
+      },
+      "required": [
+        "clip_id",
+        "snapshots",
+        "events"
+      ],
+      "title": "ReferenceClip",
+      "type": "object"
+    },
+    "ReferenceEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "gate_id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Gate Id",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "in",
+            "out"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time_s",
+        "gate_id",
+        "direction",
+        "notes"
+      ],
+      "title": "ReferenceEvent",
+      "type": "object"
+    },
+    "ReferenceSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "zone_counts": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]*$": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "title": "Zone Counts",
+          "type": "object"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time_s",
+        "zone_counts",
+        "notes"
+      ],
+      "title": "ReferenceSnapshot",
+      "type": "object"
+    },
+    "ReplayClip": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "split": {
+          "enum": [
+            "development",
+            "held_out"
+          ],
+          "title": "Split",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/Source"
+        },
+        "source_start_s": {
+          "minimum": 0,
+          "title": "Source Start S",
+          "type": "number"
+        },
+        "source_clock": {
+          "default": "media_pts",
+          "enum": [
+            "media_pts",
+            "meva_r13_cfr"
+          ],
+          "title": "Source Clock",
+          "type": "string"
+        },
+        "source_start_frame": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Start Frame"
+        },
+        "source_pts_irregularities": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Source Pts Irregularities",
+          "type": "integer"
+        },
+        "crop": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            }
+          ],
+          "title": "Crop",
+          "type": "array"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        },
+        "duration_s": {
+          "exclusiveMinimum": 0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "video": {
+          "pattern": "^media/[a-z][a-z0-9_-]*\\.mp4$",
+          "title": "Video",
+          "type": "string"
+        },
+        "video_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Video Sha256",
+          "type": "string"
+        },
+        "baseline": {
+          "$ref": "#/$defs/Analysis"
+        },
+        "candidate": {
+          "$ref": "#/$defs/Analysis"
+        },
+        "review_moments": {
+          "items": {
+            "$ref": "#/$defs/ReviewMoment"
+          },
+          "title": "Review Moments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "split",
+        "source",
+        "source_start_s",
+        "source_clock",
+        "source_start_frame",
+        "source_pts_irregularities",
+        "crop",
+        "width",
+        "height",
+        "duration_s",
+        "video",
+        "video_sha256",
+        "baseline",
+        "candidate",
+        "review_moments"
+      ],
+      "title": "ReplayClip",
+      "type": "object"
+    },
+    "ReviewMoment": {
+      "additionalProperties": false,
+      "properties": {
+        "time_s": {
+          "minimum": 0,
+          "title": "Time S",
+          "type": "number"
+        },
+        "kind": {
+          "enum": [
+            "reference_disagreement",
+            "confirmed_error",
+            "low_confidence"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "baseline",
+            "candidate"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "details": {
+          "title": "Details",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time_s",
+        "kind",
+        "method",
+        "details"
+      ],
+      "title": "ReviewMoment",
+      "type": "object"
+    },
+    "Run": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Command",
+          "type": "array"
+        },
+        "code_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Code Revision"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "model_revision": {
+          "title": "Model Revision",
+          "type": "string"
+        },
+        "model_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Model Sha256",
+          "type": "string"
+        },
+        "device": {
+          "enum": [
+            "cpu",
+            "cuda",
+            "synthetic"
+          ],
+          "title": "Device",
+          "type": "string"
+        },
+        "hardware": {
+          "title": "Hardware",
+          "type": "string"
+        },
+        "versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Versions",
+          "type": "object"
+        },
+        "elapsed_seconds": {
+          "minimum": 0,
+          "title": "Elapsed Seconds",
+          "type": "number"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "code_revision",
+        "config_sha256",
+        "model_id",
+        "model_revision",
+        "model_sha256",
+        "device",
+        "hardware",
+        "versions",
+        "elapsed_seconds",
+        "seed"
+      ],
+      "title": "Run",
+      "type": "object"
+    },
+    "Site": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "description": {
+          "$ref": "#/$defs/Text"
+        },
+        "zones": {
+          "items": {
+            "$ref": "#/$defs/Zone"
+          },
+          "minItems": 1,
+          "title": "Zones",
+          "type": "array"
+        },
+        "gates": {
+          "items": {
+            "$ref": "#/$defs/Gate"
+          },
+          "minItems": 1,
+          "title": "Gates",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "zones",
+        "gates"
+      ],
+      "title": "Site",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "pattern": "^(https://[^\\s]+|/api/analysis/videos/[0-9a-f]{32}/source)$",
+          "title": "Url",
+          "type": "string"
+        },
+        "file": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "File",
+          "type": "string"
+        },
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        },
+        "duration_s": {
+          "exclusiveMinimum": 0,
+          "title": "Duration S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "url",
+        "file",
+        "bytes",
+        "sha256",
+        "width",
+        "height",
+        "duration_s"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "Text": {
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "minLength": 1,
+          "title": "En",
+          "type": "string"
+        },
+        "ro": {
+          "minLength": 1,
+          "title": "Ro",
+          "type": "string"
+        }
+      },
+      "required": [
+        "en",
+        "ro"
+      ],
+      "title": "Text",
+      "type": "object"
+    },
+    "Vehicle": {
+      "additionalProperties": false,
+      "properties": {
+        "box": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Box",
+          "type": "array"
+        },
+        "label": {
+          "enum": [
+            "car",
+            "motorcycle",
+            "bus",
+            "truck"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "track_id": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Track Id"
+        }
+      },
+      "required": [
+        "box",
+        "label",
+        "score",
+        "track_id"
+      ],
+      "title": "Vehicle",
+      "type": "object"
+    },
+    "Zone": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "polygon": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 3,
+          "title": "Polygon",
+          "type": "array"
+        },
+        "capacity": {
+          "default": null,
+          "title": "Capacity",
+          "type": "null"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "polygon",
+        "capacity"
+      ],
+      "title": "Zone",
+      "type": "object"
+    },
+    "ZoneCount": {
+      "additionalProperties": false,
+      "properties": {
+        "zone_id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "vehicle_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vehicle Count"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "detections",
+            "confirmation_pending",
+            "no_observation"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "unconfirmed_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Unconfirmed Count",
+          "type": "integer"
+        },
+        "capacity": {
+          "default": null,
+          "title": "Capacity",
+          "type": "null"
+        },
+        "available": {
+          "default": null,
+          "title": "Available",
+          "type": "null"
+        }
+      },
+      "required": [
+        "zone_id",
+        "vehicle_count",
+        "state",
+        "reason",
+        "unconfirmed_count",
+        "capacity",
+        "available"
+      ],
+      "title": "ZoneCount",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "site": {
+      "$ref": "#/$defs/Site"
+    },
+    "protocol": {
+      "$ref": "#/$defs/Protocol"
+    },
+    "analysis_fps": {
+      "exclusiveMinimum": 0,
+      "title": "Analysis Fps",
+      "type": "integer"
+    },
+    "stale_after_s": {
+      "exclusiveMinimum": 0,
+      "title": "Stale After S",
+      "type": "number"
+    },
+    "run": {
+      "$ref": "#/$defs/Run"
+    },
+    "attribution": {
+      "$ref": "#/$defs/Attribution"
+    },
+    "clips": {
+      "items": {
+        "$ref": "#/$defs/ReplayClip"
+      },
+      "minItems": 1,
+      "title": "Clips",
+      "type": "array"
+    },
+    "reference": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Reference"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evaluation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Evaluation"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "synthetic",
+    "site",
+    "protocol",
+    "analysis_fps",
+    "stale_after_s",
+    "run",
+    "attribution",
+    "clips",
+    "reference",
+    "evaluation"
+  ],
+  "title": "Bundle",
+  "type": "object"
+}

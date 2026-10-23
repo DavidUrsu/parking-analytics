@@ -1,0 +1,53 @@
+#mode-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  max-width: 1440px;
+  margin: auto;
+  padding: 1rem clamp(1rem, 4vw, 3rem) 0;
+}
+#mode-navigation a {
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 0.5rem 0.9rem;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+#mode-navigation a:hover { border-color: #71859b; color: white; }
+#mode-navigation a.selected { color: #111821; background: var(--accent); border-color: var(--accent); }
+.op-gap { margin-top: 1rem; }
+.op-source { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: end; }
+.op-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; align-items: end; }
+.op-grid input:not([type="range"]), .op-grid select, .op-source select,
+#review-plate, #review-country, #review-time {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #46576a;
+  border-radius: 7px;
+  background: #162333;
+  padding: 0.55rem 0.75rem;
+}
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.op-pagination, .op-actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+.op-pagination span { color: var(--muted); font-size: 0.85rem; }
+#monitor-results table { min-width: 1050px; }
+#monitor-results td small { display: block; margin-top: 0.3rem; max-width: 220px; }
+.op-row-actions { min-width: 180px; }
+.op-row-actions button, .op-row-actions a { display: block; margin-bottom: 0.4rem; font-size: 0.72rem; }
+.op-row-actions button { width: 100%; text-align: left; overflow-wrap: anywhere; }
+.op-json { font-size: 0.75rem; max-height: 240px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: #c6d5e4; }
+.op-total { font-size: 2.4rem; font-weight: 650; color: var(--accent); font-variant-numeric: tabular-nums; }
+#review-reason { min-height: 85px; resize: vertical; }
+#monitor-meta, #page-range { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 850px) {
+  .op-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 540px) {
+  #mode-navigation { padding: 0.75rem 0.75rem 0; gap: 0.35rem; }
+  #mode-navigation a { flex: 1 1 40%; text-align: center; padding: 0.45rem; }
+  .op-grid { grid-template-columns: 1fr; }
+  .op-source button { width: 100%; }
+  .op-source .grow { flex-basis: 100%; }
+}

@@ -1,0 +1,860 @@
+{
+  "$defs": {
+    "AnalysisJob": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[0-9a-f]{32}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "video_id": {
+          "pattern": "^[0-9a-f]{32}$",
+          "title": "Video Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "site": {
+          "$ref": "#/$defs/Site"
+        },
+        "clock": {
+          "$ref": "#/$defs/RecordingClock"
+        },
+        "device": {
+          "enum": [
+            "cpu",
+            "cuda"
+          ],
+          "title": "Device",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "cancelling",
+            "cancelled",
+            "succeeded",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "queued",
+            "waiting_resource",
+            "preparing_media",
+            "loading_model",
+            "analyzing",
+            "finalizing",
+            "finished"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Started At"
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Finished At"
+        },
+        "duration_s": {
+          "exclusiveMinimum": 0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "processed_frames": {
+          "minimum": 0,
+          "title": "Processed Frames",
+          "type": "integer"
+        },
+        "processed_media_s": {
+          "minimum": 0,
+          "title": "Processed Media S",
+          "type": "number"
+        },
+        "phase_fraction": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Phase Fraction"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Error"
+        },
+        "bundle_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Bundle Url"
+        },
+        "events_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Events Url"
+        },
+        "export_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Export Url"
+        }
+      },
+      "required": [
+        "id",
+        "video_id",
+        "name",
+        "site",
+        "clock",
+        "device",
+        "status",
+        "phase",
+        "created_at",
+        "updated_at",
+        "started_at",
+        "finished_at",
+        "duration_s",
+        "processed_frames",
+        "processed_media_s",
+        "phase_fraction",
+        "error",
+        "bundle_url",
+        "events_url",
+        "export_url"
+      ],
+      "title": "AnalysisJob",
+      "type": "object"
+    },
+    "CameraPreset": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[0-9a-f]{32}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        },
+        "site": {
+          "$ref": "#/$defs/Site"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "width",
+        "height",
+        "site",
+        "updated_at"
+      ],
+      "title": "CameraPreset",
+      "type": "object"
+    },
+    "CapabilitiesResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_capabilities",
+          "default": "analysis_capabilities",
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_upload_bytes": {
+          "default": 536870912,
+          "title": "Max Upload Bytes",
+          "type": "integer"
+        },
+        "max_duration_s": {
+          "default": 600,
+          "title": "Max Duration S",
+          "type": "integer"
+        },
+        "max_pixels": {
+          "default": 2073600,
+          "title": "Max Pixels",
+          "type": "integer"
+        },
+        "max_run_s": {
+          "default": 1800,
+          "title": "Max Run S",
+          "type": "integer"
+        },
+        "max_queued": {
+          "default": 5,
+          "title": "Max Queued",
+          "type": "integer"
+        },
+        "active_workers": {
+          "const": 1,
+          "default": 1,
+          "title": "Active Workers",
+          "type": "integer"
+        },
+        "model_files_present": {
+          "title": "Model Files Present",
+          "type": "boolean"
+        },
+        "inference_packages_present": {
+          "title": "Inference Packages Present",
+          "type": "boolean"
+        },
+        "timestamp_ocr_available": {
+          "const": false,
+          "default": false,
+          "title": "Timestamp Ocr Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "max_upload_bytes",
+        "max_duration_s",
+        "max_pixels",
+        "max_run_s",
+        "max_queued",
+        "active_workers",
+        "model_files_present",
+        "inference_packages_present",
+        "timestamp_ocr_available"
+      ],
+      "title": "CapabilitiesResponse",
+      "type": "object"
+    },
+    "DeletedResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_deleted",
+          "default": "analysis_deleted",
+          "title": "Kind",
+          "type": "string"
+        },
+        "video_id": {
+          "pattern": "^[0-9a-f]{32}$",
+          "title": "Video Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "video_id"
+      ],
+      "title": "DeletedResponse",
+      "type": "object"
+    },
+    "Gate": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "start": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Start",
+          "type": "array"
+        },
+        "end": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "End",
+          "type": "array"
+        },
+        "inward_side": {
+          "enum": [
+            -1,
+            1
+          ],
+          "title": "Inward Side",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "start",
+        "end",
+        "inward_side"
+      ],
+      "title": "Gate",
+      "type": "object"
+    },
+    "JobResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_job",
+          "default": "analysis_job",
+          "title": "Kind",
+          "type": "string"
+        },
+        "job": {
+          "$ref": "#/$defs/AnalysisJob"
+        }
+      },
+      "required": [
+        "kind",
+        "job"
+      ],
+      "title": "JobResponse",
+      "type": "object"
+    },
+    "JobsResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_jobs",
+          "default": "analysis_jobs",
+          "title": "Kind",
+          "type": "string"
+        },
+        "jobs": {
+          "items": {
+            "$ref": "#/$defs/AnalysisJob"
+          },
+          "title": "Jobs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "jobs"
+      ],
+      "title": "JobsResponse",
+      "type": "object"
+    },
+    "PresetsResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_presets",
+          "default": "analysis_presets",
+          "title": "Kind",
+          "type": "string"
+        },
+        "presets": {
+          "items": {
+            "$ref": "#/$defs/CameraPreset"
+          },
+          "title": "Presets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "presets"
+      ],
+      "title": "PresetsResponse",
+      "type": "object"
+    },
+    "RecordingClock": {
+      "additionalProperties": false,
+      "properties": {
+        "start_utc": {
+          "format": "date-time",
+          "title": "Start Utc",
+          "type": "string"
+        },
+        "original_start": {
+          "title": "Original Start",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "manual",
+            "metadata_confirmed"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "metadata_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Metadata Key"
+        },
+        "playback_rate": {
+          "const": 1.0,
+          "default": 1.0,
+          "title": "Playback Rate",
+          "type": "number"
+        },
+        "realtime_assumed": {
+          "const": true,
+          "default": true,
+          "title": "Realtime Assumed",
+          "type": "boolean"
+        },
+        "independently_verified": {
+          "const": false,
+          "default": false,
+          "title": "Independently Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "start_utc",
+        "original_start",
+        "source",
+        "metadata_key",
+        "playback_rate",
+        "realtime_assumed",
+        "independently_verified"
+      ],
+      "title": "RecordingClock",
+      "type": "object"
+    },
+    "Site": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "description": {
+          "$ref": "#/$defs/Text"
+        },
+        "zones": {
+          "items": {
+            "$ref": "#/$defs/Zone"
+          },
+          "minItems": 1,
+          "title": "Zones",
+          "type": "array"
+        },
+        "gates": {
+          "items": {
+            "$ref": "#/$defs/Gate"
+          },
+          "minItems": 1,
+          "title": "Gates",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "zones",
+        "gates"
+      ],
+      "title": "Site",
+      "type": "object"
+    },
+    "Text": {
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "minLength": 1,
+          "title": "En",
+          "type": "string"
+        },
+        "ro": {
+          "minLength": 1,
+          "title": "Ro",
+          "type": "string"
+        }
+      },
+      "required": [
+        "en",
+        "ro"
+      ],
+      "title": "Text",
+      "type": "object"
+    },
+    "TimestampCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "raw_value": {
+          "title": "Raw Value",
+          "type": "string"
+        },
+        "parsed_utc": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parsed Utc"
+        },
+        "needs_timezone": {
+          "title": "Needs Timezone",
+          "type": "boolean"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "raw_value",
+        "parsed_utc",
+        "needs_timezone",
+        "note"
+      ],
+      "title": "TimestampCandidate",
+      "type": "object"
+    },
+    "UploadedVideo": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[0-9a-f]{32}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "original_name": {
+          "title": "Original Name",
+          "type": "string"
+        },
+        "content_kind": {
+          "enum": [
+            "recording",
+            "synthetic_test"
+          ],
+          "title": "Content Kind",
+          "type": "string"
+        },
+        "bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 536870912,
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        },
+        "duration_s": {
+          "exclusiveMinimum": 0,
+          "maximum": 600,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "nominal_fps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Nominal Fps"
+        },
+        "codec": {
+          "title": "Codec",
+          "type": "string"
+        },
+        "container_format": {
+          "title": "Container Format",
+          "type": "string"
+        },
+        "rotation_degrees": {
+          "title": "Rotation Degrees",
+          "type": "integer"
+        },
+        "timestamp_candidates": {
+          "items": {
+            "$ref": "#/$defs/TimestampCandidate"
+          },
+          "title": "Timestamp Candidates",
+          "type": "array"
+        },
+        "burned_in_timestamp_checked": {
+          "const": false,
+          "default": false,
+          "title": "Burned In Timestamp Checked",
+          "type": "boolean"
+        },
+        "imported_at": {
+          "format": "date-time",
+          "title": "Imported At",
+          "type": "string"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "preview_url": {
+          "title": "Preview Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "original_name",
+        "content_kind",
+        "bytes",
+        "sha256",
+        "width",
+        "height",
+        "duration_s",
+        "nominal_fps",
+        "codec",
+        "container_format",
+        "rotation_degrees",
+        "timestamp_candidates",
+        "burned_in_timestamp_checked",
+        "imported_at",
+        "source_url",
+        "preview_url"
+      ],
+      "title": "UploadedVideo",
+      "type": "object"
+    },
+    "VideoResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_video",
+          "default": "analysis_video",
+          "title": "Kind",
+          "type": "string"
+        },
+        "video": {
+          "$ref": "#/$defs/UploadedVideo"
+        }
+      },
+      "required": [
+        "kind",
+        "video"
+      ],
+      "title": "VideoResponse",
+      "type": "object"
+    },
+    "VideosResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "analysis_videos",
+          "default": "analysis_videos",
+          "title": "Kind",
+          "type": "string"
+        },
+        "videos": {
+          "items": {
+            "$ref": "#/$defs/UploadedVideo"
+          },
+          "title": "Videos",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "videos"
+      ],
+      "title": "VideosResponse",
+      "type": "object"
+    },
+    "Zone": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "polygon": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 3,
+          "title": "Polygon",
+          "type": "array"
+        },
+        "capacity": {
+          "default": null,
+          "title": "Capacity",
+          "type": "null"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "polygon",
+        "capacity"
+      ],
+      "title": "Zone",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/VideoResponse"
+    },
+    {
+      "$ref": "#/$defs/VideosResponse"
+    },
+    {
+      "$ref": "#/$defs/JobResponse"
+    },
+    {
+      "$ref": "#/$defs/JobsResponse"
+    },
+    {
+      "$ref": "#/$defs/PresetsResponse"
+    },
+    {
+      "$ref": "#/$defs/CapabilitiesResponse"
+    },
+    {
+      "$ref": "#/$defs/DeletedResponse"
+    }
+  ]
+}

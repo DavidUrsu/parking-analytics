@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "site": {
+    "id": "meva-g328",
+    "name": {"en": "MEVA G328 foreground parking area", "ro": "Zona de parcare MEVA G328"},
+    "description": {
+      "en": "Observed vehicles in the outlined area, including moving vehicles. This is not a count of marked bays or whole-site occupancy. Capacity and available spaces are unknown.",
+      "ro": "Vehicule observate in zona conturata, inclusiv vehicule in miscare. Nu reprezinta locuri marcate sau ocuparea intregii parcari. Capacitatea si locurile libere sunt necunoscute."
+    },
+    "zones": [
+      {
+        "id": "foreground",
+        "name": {"en": "Foreground parking area", "ro": "Zona de parcare din prim-plan"},
+        "polygon": [[0.09143, 0.42368], [0.66286, 0.42368], [0.94857, 0.7024], [0.94857, 0.89536], [0.09143, 0.89536]],
+        "capacity": null
+      }
+    ],
+    "gates": [
+      {
+        "id": "north",
+        "name": {"en": "Upper observation boundary", "ro": "Limita superioara"},
+        "start": [0.09143, 0.42368],
+        "end": [0.66286, 0.42368],
+        "inward_side": 1
+      },
+      {
+        "id": "access",
+        "name": {"en": "Right access boundary", "ro": "Limita de acces din dreapta"},
+        "start": [0.66286, 0.42368],
+        "end": [0.94857, 0.7024],
+        "inward_side": 1
+      },
+      {
+        "id": "west",
+        "name": {"en": "Left observation boundary", "ro": "Limita din stanga"},
+        "start": [0.09143, 0.89536],
+        "end": [0.09143, 0.42368],
+        "inward_side": 1
+      }
+    ]
+  },
+  "crop": [0, 560, 1680, 1060],
+  "source_clock": "meva_r13_cfr",
+  "export_size": [1344, 400],
+  "analysis_fps": 5,
+  "stale_after_s": 0.6,
+  "crossing_band": 0.008,
+  "max_track_gap_s": 1.0,
+  "baseline_iou_threshold": 0.3,
+  "model": {
+    "id": "PekingU/rtdetr_r18vd",
+    "revision": "ac77a11ff0170a41b771c03264987f8ce2b0d753",
+    "license": "Apache-2.0",
+    "weights_sha256": "fe87a5a30f5daf298d10794c7682a63b6107986f97d6a770ba948d89e4340093",
+    "threshold": 0.25,
+    "vehicle_nms_iou": 0.7,
+    "vehicle_labels": ["car", "motorcycle", "bus", "truck"]
+  },
+  "protocol": {
+    "version": "g328-zone-v2",
+    "occupancy_mode": "observed_vehicle_count",
+    "reference_interval_s": 5,
+    "event_tolerance_s": 1.0,
+    "notes": "Geometry, splits, crop, sample cadence and detector threshold fixed before inference. Protocol v2 fixes duplicate vehicle aggregation: class-agnostic torchvision NMS at IoU 0.7 prevents overlapping car/truck/query boxes being counted as separate vehicles. Diagnosed on development footage, not a model/threshold search. Both methods report the same observed vehicle count; tentative track IDs are reported separately, not mistaken for invisible vehicles. Count bottom-centre anchors, including moving vehicles. No parked-bay classification, capacity, queue or dwell claim."
+  },
+  "max_download_bytes": 5368709120,
+  "max_run_seconds": 1800,
+  "clips": [
+    {
+      "id": "development",
+      "name": {"en": "Development: a vehicle passes the row", "ro": "Dezvoltare: vehicul in dreptul parcarii"},
+      "split": "development",
+      "source": {
+        "url": "https://mevadata-public-01.s3.amazonaws.com/drops-123-r13/2018-03-07/16/2018-03-07.16-50-01.16-55-01.school.G328.r13.avi",
+        "file": "2018-03-07.16-50-01.16-55-01.school.G328.r13.avi",
+        "bytes": 94467500,
+        "sha256": "722e6636c3f859b2855b796cdc91899cb8c80284cf4f0b7e5c95ef06bf3c2c41",
+        "width": 1920,
+        "height": 1072,
+        "duration_s": 300.0
+      },
+      "start_s": 60.0,
+      "end_s": 120.0
+    },
+    {
+      "id": "arrival",
+      "name": {"en": "Held out: arrival under changing cloud", "ro": "Evaluare: sosire si nori schimbatori"},
+      "split": "held_out",
+      "source": {
+        "url": "https://mevadata-public-01.s3.amazonaws.com/drops-123-r13/2018-03-13/17/2018-03-13.17-05-00.17-10-00.school.G328.r13.avi",
+        "file": "2018-03-13.17-05-00.17-10-00.school.G328.r13.avi",
+        "bytes": 119317706,
+        "sha256": "a8644db7199a9309db821e5a3587cbd4ea56aed36a74d068193aad36ec929429",
+        "width": 1920,
+        "height": 1072,
+        "duration_s": 300.0
+      },
+      "start_s": 150.0,
+      "end_s": 240.0
+    },
+    {
+      "id": "occlusion",
+      "name": {"en": "Held out: arrival, people and passing traffic", "ro": "Evaluare: sosire, pietoni si trafic"},
+      "split": "held_out",
+      "source": {
+        "url": "https://mevadata-public-01.s3.amazonaws.com/drops-123-r13/2018-03-13/17/2018-03-13.17-15-00.17-20-00.school.G328.r13.avi",
+        "file": "2018-03-13.17-15-00.17-20-00.school.G328.r13.avi",
+        "bytes": 137591612,
+        "sha256": "74623097d146523cbd1924100fbd47a09bb05b05ee01a32b5c787ff3b0d2f74f",
+        "width": 1920,
+        "height": 1072,
+        "duration_s": 300.06666666666666
+      },
+      "start_s": 180.0,
+      "end_s": 285.0
+    }
+  ]
+}
