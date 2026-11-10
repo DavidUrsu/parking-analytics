@@ -9,7 +9,8 @@
   mapped-space arithmetic plus real camera context) and the existing Evidence
   replay within Analyze & review. Private drag/drop custom-video analysis,
   visual camera geometry, saved presets, cancellable processing and confirmed
-  recording times are implemented.
+  recording times are implemented. Overview is now a dashboard camera wall
+  with recorded feeds, selectable 1/4/9-view grids and the shared tools sidebar.
 - Acceptance: exact plate history and entry/exit/time-range queries, safe
   incomplete/ambiguous visits, auditable corrections, exact-money previews,
   unknown space handling, preserved real replay, and English/Romanian controls.
@@ -64,6 +65,7 @@ settings and reproduction instructions are in the README.
 | Browser fixture | `uv run --no-sync parking smoke --output viewer\public\test-fixture --replace-synthetic` |
 | Viewer setup | In `viewer`: `npm.cmd install --no-audit --no-fund --cache '..\.cache\npm'` |
 | Viewer checks | In `viewer`: `npm.cmd run build`; `npm.cmd test` |
+| README screenshots | In `viewer`: `npm.cmd run screenshots` (isolated synthetic UI data, no inference) |
 | Start viewer | In `viewer`: `npm.cmd run dev` |
 | Regenerate contract | `uv run --no-sync parking schema --output viewer\src\bundle.schema.json --overwrite` |
 | Regenerate operations contract | `uv run --no-sync parking schema --kind operations --output viewer\src\operations.schema.json --overwrite` |
@@ -113,12 +115,21 @@ Update documentation when behavior or commands change.
   timestamps are not automatically read unless a separate OCR path is evaluated.
 - Visual zones describe visible vehicle presence, not available bays.
   Do not turn uploaded track IDs into plate identities or billable visits.
+- The dashboard wall is recorded playback, not live cameras. The three MEVA
+  segments are one camera at different times; do not aggregate their readings
+  into a simultaneous site total or invent camera names/locations.
+- Persist only layout and demo feed IDs in browser preferences. Private
+  analyzed recordings require per-visit opt-in and explicit selection, never
+  auto-display or persistence of their names/IDs. Missing feeds stay unknown.
 - Private API replay media streams after server-side checksum verification;
   static benchmark media retains full client-side checksum verification.
   Never copy private bundles/media to static/public exports.
 - Browser tests use `npm.cmd test` so their isolated database/media are removed
   only after Playwright has stopped its servers. Do not delete a live test
   database from global-setup teardown.
+- Curated `docs\screenshots` images use original synthetic fixtures only.
+  Keep real/private footage and plate histories out of public screenshots;
+  generate them explicitly, not as a side effect of the normal test suite.
 - Event imports must be atomic and idempotent. Conflicting IDs, ambiguous
   pairs and missing exits need visible review, not guessed times or fees.
 - Operator APIs are local prototypes, not authenticated public deployments.

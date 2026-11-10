@@ -1,6 +1,8 @@
 import type { Language } from "./types";
 
 const en = {
+  dashboard: "Overview", dashboardTitle: "Camera overview",
+  dashboardIntro: "Your cameras and parking tools, together in one workspace.",
   monitoring: "Monitoring", billing: "Billing", capacity: "Capacity", evidence: "Evidence",
   analysis: "Analyze & review", analysisIntro: "Private recorded-video analysis.",
   modes: "Working mode", brand: "PARKING / OPERATOR WORKSPACE", language: "Language",
@@ -68,6 +70,8 @@ const en = {
 
 export type OpKey = keyof typeof en;
 const ro: Record<OpKey, string> = {
+  dashboard: "Prezentare", dashboardTitle: "Prezentarea camerelor",
+  dashboardIntro: "Camerele si uneltele parcarii, intr-un singur spatiu de lucru.",
   monitoring: "Monitorizare", billing: "Tarifare", capacity: "Capacitate", evidence: "Dovezi",
   analysis: "Analiza si verificare", analysisIntro: "Analiza privata a filmarilor.",
   modes: "Mod de lucru", brand: "PARCARE / SPATIU DE LUCRU", language: "Limba",

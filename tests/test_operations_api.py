@@ -115,3 +115,47 @@ def test_calculators_validate_and_return_explicit_non_invoice_results(api_client
         json={"mapped_spaces": 10, "occupied_spaces": 8, "unknown_spaces": 4},
     )
     assert invalid.status_code == 422
+
+
+def test_frontend_entry_revalidates_for_all_modes_and_after_a_rebuild(tmp_path, monkeypatch):
+    pytest.importorskip("fastapi", reason="Optional app dependencies are not installed")
+    pytest.importorskip("httpx", reason="API test dependencies are not installed")
+    from fastapi.testclient import TestClient
+
+    from parking_analytics import api
+
+    frontend = tmp_path / "viewer" / "dist"
+    assets = frontend / "assets"
+    assets.mkdir(parents=True)
+    entry = frontend / "index.html"
+    entry.write_text("<html>previous dashboard build</html>", encoding="utf-8")
+    (assets / "app-versioned.js").write_text("console.log('test fixture');", encoding="utf-8")
+    monkeypatch.setattr(api, "ROOT", tmp_path)
+    app = api.create_app(tmp_path / "operator.sqlite3")
+    with TestClient(app, base_url="http://127.0.0.1") as client:
+        paths = ["/", "/index.html"]
+        paths.extend(
+            f"/?mode={mode}&lang={language}"
+            for mode in ("dashboard", "monitoring", "billing", "capacity", "analysis", "evidence")
+            for language in ("en", "ro")
+        )
+        for path in paths:
+            response = client.get(path)
+            assert response.status_code == 200 and "previous dashboard build" in response.text
+            assert response.headers["cache-control"] == "no-cache"
+            previous_etag = response.headers["etag"]
+            unchanged = client.get(path, headers={"If-None-Match": previous_etag})
+            assert unchanged.status_code == 304
+            assert unchanged.headers["cache-control"] == "no-cache"
+
+        entry.write_text(
+            "<html>new dashboard build with shared navigation</html>", encoding="utf-8"
+        )
+        updated = client.get("/?mode=monitoring&lang=en", headers={"If-None-Match": previous_etag})
+        assert updated.status_code == 200
+        assert "new dashboard build with shared navigation" in updated.text
+        assert updated.headers["cache-control"] == "no-cache"
+        assert updated.headers["etag"] != previous_etag
+        assert client.get("/api/health").headers["cache-control"] == "no-store"
+        asset = client.get("/assets/app-versioned.js")
+        assert asset.status_code == 200 and "cache-control" not in asset.headers

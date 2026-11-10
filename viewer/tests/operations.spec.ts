@@ -46,13 +46,13 @@ function utcInput(timestamp: string): string {
 }
 
 test("Monitoring starts with no fabricated plate sources and all modes are navigable", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?mode=monitoring");
   await expect(page.locator("h1")).toHaveText("Vehicle visits, not guesses.");
   await expect(page.locator("#empty-source")).toBeVisible();
   await expect(page.locator("#search-events")).toBeDisabled();
   await expect(page.locator("#plate-filter")).toBeDisabled();
   await expect(page.locator("#operations-synthetic")).toBeHidden();
-  await expect(page.locator("#mode-navigation a")).toHaveCount(4);
+  await expect(page.locator("#mode-navigation a")).toHaveCount(5);
   await expect(page.locator("#operations-error")).toBeHidden();
 });
 

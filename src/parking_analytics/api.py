@@ -114,6 +114,8 @@ def create_app(
             response.headers["Cache-Control"] = "no-store"
             response.headers["Pragma"] = "no-cache"
             response.headers["X-Content-Type-Options"] = "nosniff"
+        elif request.url.path in ("/", "/index.html"):
+            response.headers["Cache-Control"] = "no-cache"
         return response
 
     @app.exception_handler(RequestValidationError)

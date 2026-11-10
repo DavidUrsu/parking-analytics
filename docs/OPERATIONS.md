@@ -4,6 +4,55 @@ This release implements the event/visit/query and calculation layers. It does
 not read licence plates from video yet. A future qualified ANPR source can
 produce the same event contract; existing clip-local tracking IDs cannot.
 
+## Dashboard and camera wall
+
+Overview is the default entry screen. A shared dashboard sidebar leads to
+Monitoring, Billing, Capacity and Analyze & review; the language selector
+stays in the dashboard header. The tools retain their existing query,
+calculation, review and privacy behavior. These are ordinary page links, so
+leaving the wall stops its players; it does not keep hidden video decoding
+or processing work running behind a tool.
+
+Choose 1, 4 or 9 views and a recording in each view's selector. The selection
+can include the same clip more than once, but no view count is treated as a
+distinct physical-camera count. The existing MEVA choices are three separate
+historical segments of camera G328. The wall labels them recorded demos, not
+live or simultaneous feeds. Each player has its own media timeline, and no
+cross-view occupancy/crossing totals are inferred.
+
+Static demo media retains client-side SHA-256 verification. Completed private
+results stream through their checksum-verifying local API. A decoded first
+frame is required before a view shows model observations. Missing, invalid
+or changed media fails visibly. Boxes, normalized zones and boundaries remain
+aligned with the image when the grid or viewport changes. Unknown observations
+are not displayed as zero. Seeking and looping reconstruct the event prefix
+for the selected timestamp rather than incrementing counters again.
+
+Muted autoplay respects reduced motion and can be blocked by browser policy;
+Play wall or a view's play button can start it explicitly. Hiding/leaving the page
+pauses the players. Wall options includes overlays and looping. Open detailed
+review preserves that view's clip and media time; it does not map historical
+footage to the current wall clock.
+
+Grid size and **demo-only** selections are stored locally under
+`parking.camera-wall.v1`. Hidden assignments survive a layout shrink/expand.
+Malformed preferences produce a notice and the default grid; unavailable
+saved clips remain visibly unavailable instead of being silently replaced.
+Reset layout restores the available demo choices. No video files, plate
+queries, private recording IDs/names or recording times enter these preferences.
+
+Private analyzed recordings require an explicit per-visit opt-in under Wall
+options. Only the latest successful jobs available from the existing recent
+job list are offered. The wall selects none automatically, stores no private
+selection, and resets the opt-in on reload. Unchecking it unloads the private
+players immediately. Add recording opens Analyze & review; the wall does not
+start inference, import plate events, create fees or expose raw uploads.
+
+No RTSP/webcam/live-camera transport is implemented in this slice. Connecting
+an actual source requires its transport, authorization and access boundaries
+to be configured separately. Public source-code availability does not make
+the local private-data application an authenticated public deployment.
+
 ## Private video analysis
 
 The Analyze & review tab accepts one authorized fixed-camera recording at a

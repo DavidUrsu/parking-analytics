@@ -4,6 +4,7 @@ import { analysisRequest } from "./analysis-client";
 import type { AnalysisJob } from "./analysis-types";
 import { isKey, text, type Key } from "./i18n";
 import { countsAt, parseBundle, sampleAt } from "./replay";
+import { loadReplayMedia, type ReplayMedia } from "./replay-media";
 import type {
   Bundle, Language, Method, Point, Reference, ReferenceClip, ReplayClip, Split,
 } from "./types";
@@ -126,7 +127,7 @@ let draftDirty = false;
 let mediaReady = false;
 let request = 0;
 let controller: AbortController | null = null;
-let objectURL: string | null = null;
+let mediaResource: ReplayMedia | null = null;
 let animation = 0;
 let recordingJob: AnalysisJob | null = null;
 let privateReplay = false;
@@ -327,23 +328,6 @@ function animate(): void {
   if (!video.paused) animation = requestAnimationFrame(animate);
 }
 
-async function waitForMedia(url: string, signal: AbortSignal): Promise<void> {
-  await new Promise<void>((resolve, reject) => {
-    const cleanup = (): void => {
-      video.removeEventListener("loadedmetadata", loaded);
-      video.removeEventListener("error", failed);
-      signal.removeEventListener("abort", aborted);
-    };
-    const loaded = (): void => { cleanup(); resolve(); };
-    const failed = (): void => { cleanup(); reject(new Error(t("mediaError"))); };
-    const aborted = (): void => { cleanup(); reject(new DOMException("Cancelled", "AbortError")); };
-    video.addEventListener("loadedmetadata", loaded, { once: true });
-    video.addEventListener("error", failed, { once: true });
-    signal.addEventListener("abort", aborted, { once: true });
-    video.src = url; video.load();
-  });
-}
-
 async function selectClip(id: string): Promise<void> {
   if (!data) throw new Error("Replay is not loaded");
   const clip = data.clips.find((item) => item.id === id);
@@ -352,44 +336,17 @@ async function selectClip(id: string): Promise<void> {
   controller?.abort();
   const active = new AbortController(); controller = active;
   video.pause(); mediaReady = false;
+  mediaResource?.dispose(); mediaResource = null;
   play.disabled = true; seek.disabled = true;
   for (const name of ["previous-sample", "next-sample"]) element<HTMLButtonElement>(`#${name}`).disabled = true;
   setText("#media-status", t("loading"));
   for (const name of ["observed", "entries", "exits"]) setText(`#${name}`, t("unknown"));
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const url = new URL(clip.video, bundleURL);
-  if (url.origin !== location.origin) throw new Error("Replay media must be same-origin local assets");
   try {
     serverVerified = false;
-    if (recordingJob && url.pathname === `/api/analysis/jobs/${recordingJob.id}/media/recording.mp4`) {
-      const response = await fetch(url, { method: "HEAD", signal: active.signal, cache: "no-store" });
-      if (!response.ok) throw new Error(`Private media request failed (${response.status})`);
-      if (response.headers.get("X-Integrity-Check") !== "server-verified"
-          || response.headers.get("X-Content-SHA256") !== clip.video_sha256) {
-        throw new Error(`Private media SHA-256 mismatch: ${clip.id}`);
-      }
-      if (token !== request) return;
-      if (objectURL) { URL.revokeObjectURL(objectURL); objectURL = null; }
-      await waitForMedia(url.href, active.signal);
-      serverVerified = true;
-    } else {
-      const response = await fetch(url, { signal: active.signal });
-      if (!response.ok) throw new Error(`Media request failed (${response.status}): ${clip.video}`);
-      const size = Number(response.headers.get("Content-Length"));
-      if (size > 64 * 1024 ** 2) throw new Error("Static clip exceeds the 64 MiB buffered-media limit");
-      const buffer = await response.arrayBuffer();
-      if (buffer.byteLength > 64 * 1024 ** 2) throw new Error("Clip exceeds the media size limit");
-      const digest = await crypto.subtle.digest("SHA-256", buffer);
-      const hash = Array.from(new Uint8Array(digest), (value) => value.toString(16).padStart(2, "0")).join("");
-      if (hash !== clip.video_sha256) throw new Error(`Media SHA-256 mismatch: ${clip.id}`);
-      if (token !== request) return;
-      if (objectURL) URL.revokeObjectURL(objectURL);
-      objectURL = URL.createObjectURL(new Blob([buffer], { type: "video/mp4" }));
-      await waitForMedia(objectURL, active.signal);
-    }
-    if (token !== request) return;
-    if (video.videoWidth !== clip.width || video.videoHeight !== clip.height
-        || Math.abs(video.duration - clip.duration_s) > 0.1) throw new Error(t("mediaError"));
+    const resource = await loadReplayMedia(video, clip, bundleURL, active.signal);
+    if (token !== request) { resource.dispose(); return; }
+    mediaResource = resource; serverVerified = resource.serverVerified;
     current = clip; clipSelect.value = clip.id;
     element<HTMLSelectElement>("#snapshot").value = "0";
     canvas.width = clip.width; canvas.height = clip.height;
@@ -719,7 +676,7 @@ window.addEventListener("beforeunload", (event) => {
 });
 window.addEventListener("pagehide", () => {
   controller?.abort();
-  if (objectURL) URL.revokeObjectURL(objectURL);
+  mediaResource?.dispose();
 });
 
 async function load(): Promise<void> {
@@ -741,9 +698,18 @@ async function load(): Promise<void> {
   data = parseBundle(payload);
   draft = data.reference ? structuredClone(data.reference) : null;
   translate();
-  const first = data.clips[0];
-  if (!first) throw new Error("Replay has no clips");
+  const query = new URLSearchParams(location.search);
+  const first = query.has("clip") ? data.clips.find((clip) => clip.id === query.get("clip")) : data.clips[0];
+  if (!first) throw new Error("The requested recording is not present in this replay");
   await selectClip(first.id);
+  if (query.has("at") && mediaReady) {
+    const raw = query.get("at");
+    const at = Number(raw);
+    if (raw === "" || !Number.isFinite(at) || at < 0 || at >= first.duration_s) {
+      throw new Error("Requested review time falls outside the selected clip");
+    }
+    video.currentTime = at; renderAt(at);
+  }
 }
 
 load().catch(showError);

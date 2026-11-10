@@ -17,9 +17,11 @@ export function parseAnalysis(value: unknown): AnalysisResponse {
   return value;
 }
 
-export async function analysisRequest(path: string, body?: unknown): Promise<AnalysisResponse> {
+export async function analysisRequest(
+  path: string, body?: unknown, signal?: AbortSignal,
+): Promise<AnalysisResponse> {
   const response = await fetch(`/api/analysis/${path}`, {
-    method: body === undefined ? "GET" : "POST", cache: "no-store",
+    method: body === undefined ? "GET" : "POST", cache: "no-store", signal,
     headers: body === undefined ? {} : { "Content-Type": "application/json" },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
